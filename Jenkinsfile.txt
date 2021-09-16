@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    options {
+       
+        skipDefaultCheckout(true)
+    }
+    
+    
+    stages {
+        stage('CLear Workspace') {
+            steps {
+            
+                cleanWs()
+         
+            }
+        }
+        stage('Cloning Repo') {
+            steps {
+              checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/umairkhanSystemsltd/pipelines-javascript.git']]])
+            }
+        }
+        stage('Build') {
+            steps {
+               nodejs('nodejs') {
+                 sh   "npm install" 
+                    }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+              nodejs('nodejs') {
+                 sh  "npm run build"
+                }
+               }
+        }
+         stage('Status') {
+            steps {
+            echo "In status Stage"
+               // post { }
+               
+            }
+        }
+       
+        stage('Deploy') {
+            steps {
+            
+               echo "In deploy Stage"
+            }
+        }
+    }
+   
+}
